@@ -1,0 +1,129 @@
+.container {
+    display: flex;
+     justify-content: center; 
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .login-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; 
+  }
+  
+  .login_btn {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(1 147 118);;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  } 
+    
+  .rester_btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #3f51b5;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  } 
+  
+  button:hover {
+    background-color: #3f51b5;
+  }
+  
+  .rester_btn{
+     margin-top: 20px;
+  }  
+
+  .login-bg{
+    box-shadow: none !important;
+  }
+  .auth-wrapper {
+    max-width: 450px !important;
+    max-width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin: auto !important;
+}
+  .sign-bt{
+    height: 50px;
+    background-color: #3f51b5 !important;
+    font-size: 1rem !important;
+    text-transform: capitalize !important;
+    margin-top: 40px !important;
+  }
+  .forgot-password{
+    text-align: right;
+    float: right;
+    line-height: 42px !important;
+    text-decoration: auto !important;
+  }
+  .css-ahj2mt-MuiTypography-root {
+    margin: 0;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+  }
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked, .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: #3f51b5;
+  }
+  .css-1sfkfgq{
+    -webkit-align-items: start !important;
+    -webkit-box-align: start !important;
+    -ms-flex-align: start !important;
+    align-items: start !important;
+  }
+  .sign-in{
+    font-size: 2rem;
+    font-family: Roboto, sans-serif;
+  }  
+  .md-30{
+    margin-bottom: 30px;
+  }
+  .sign-up{
+    color: #96a2b4;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+  .css-1xylxj1-MuiTypography-root-MuiLink-root {
+    margin: 0;
+    font: inherit;
+    color: #1976d2;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
+    text-decoration-color: rgba(25, 118, 210, 0.4);
+  }
+  .css-164r41r {
+    margin-top: 0px !important;
+  }
+  .css-101ca9i-MuiTypography-root-MuiLink-root{
+  color: rgb(13 110 253);
+  }
