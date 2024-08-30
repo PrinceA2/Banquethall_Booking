@@ -125,14 +125,14 @@ const Content = () => {
     fetchorders();
   }, []);
 
-  const getTypeofMenuNameById = (categoryId) => {
-    const menuitem = typeOfMenus.find((menuitem) => menuitem.categoryid === categoryId);
+  const getTypeofMenuNameById = (MenuId) => {
+    const menuitem = typeOfMenus.find((menuitem) => menuitem.MenuItemId=== MenuId);
     console.log(menuitem);
-    return menuitem ? menuitem.categoryName : 'Unknown';
+    return menuitem ? menuitem.MenuName : 'Unknown';
   };
 
   const getMenuitemNameById = (menuId) => {
-    var iterator = menuitems.find(iterator => iterator.menuId === menuId);
+    var iterator = menuitems.find(iterator => iterator.MenuItemId=== menuId);
     return iterator ? iterator.menuItemName : 'Unknown';
   };
 
@@ -160,7 +160,7 @@ const Content = () => {
       const response = await axios.put(updateorders,
         {
           orderId: selectedorderrow.orderId,
-          categoryId: selectedorderrow.categoryId,
+          MenuId: selectedorderrow.MenuId,
           menuId: selectedorderrow.menuId,
           totalamount: selectedorderrow.totalamount,
           orderType: selectedorderrow.orderType,
@@ -251,7 +251,7 @@ const Content = () => {
                     <StyledTableCell component="th" scope="row">
                       {row.orderId}
                     </StyledTableCell>
-                    <StyledTableCell>{getTypeofMenuNameById(row.categoryId)}</StyledTableCell>
+                    <StyledTableCell>{getTypeofMenuNameById(row.MenuId)}</StyledTableCell>
                     <StyledTableCell>{getMenuitemNameById(row.menuId)}</StyledTableCell>
                     <StyledTableCell >{row.totalamount}</StyledTableCell>
                     <StyledTableCell>{ordertypes[row.orderType]}</StyledTableCell>
@@ -294,7 +294,7 @@ const Content = () => {
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography sx={{ fontWeight: 'bold' }}>Order ID: </Typography> <Typography>{selectedorderrow.orderId}</Typography>
               <Typography sx={{ fontWeight: 'bold' }}>Status: </Typography> <Typography>{getorderstatusbyId(selectedorderrow.orderStatus)}</Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>MenuType:</Typography> <Typography> {getTypeofMenuNameById(selectedorderrow.categoryId)} </Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>MenuType:</Typography> <Typography> {getTypeofMenuNameById(selectedorderrow.MenuId)} </Typography>
               <Typography sx={{ fontWeight: 'bold' }}>FoodItem:</Typography> <Typography> {getMenuitemNameById(selectedorderrow.menuId)} </Typography>
               <Typography sx={{ fontWeight: 'bold' }}>Amount: </Typography> <Typography>{selectedorderrow.totalamount} </Typography>
               <Typography sx={{ fontWeight: 'bold' }}>OrderType: </Typography> <Typography>{ordertypes[selectedorderrow.orderType]} </Typography>

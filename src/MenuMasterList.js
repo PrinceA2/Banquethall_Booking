@@ -20,7 +20,7 @@ const MenuMasterList = () => {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [page, setPage] = useState(0);
-  const [selectedcategoryID, setselectedcategoryID] = useState(0);
+  const [selectedMenuId, setselectedMenuId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,18 +78,18 @@ const MenuMasterList = () => {
 
     setInputRows([existingRowData]);
 
-    const selectedMenu = typeOfMenus.find(menu => menu.categoryid === row.categoryId);
+    const selectedMenu = typeOfMenus.find(menu => menu.MenuItemId=== row.MenuId);
     if (selectedMenu) {
-      setTypeOfMenu(selectedMenu.categoryName);
-      setselectedcategoryID(selectedMenu.categoryid);
+      setTypeOfMenu(selectedMenu.MenuName);
+      setselectedMenuId(selectedMenu.MenuId);
     }
   };
 
   const handleTypeOfMenuChange = (event) => {
     setTypeOfMenu(event.target.value);
-    const selectedModule = typeOfMenus.find(module => module.categoryName === event.target.value);
+    const selectedModule = typeOfMenus.find(module => module.MenuName === event.target.value);
     if (selectedModule) {
-      setselectedcategoryID(selectedModule.categoryid);
+      setselectedMenuId(selectedModule.MenuId);
     }
   };
 
@@ -121,15 +121,15 @@ const MenuMasterList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const getTypeofMenuNameById = (categoryId) => {
-    const menuitem = typeOfMenus.find((menuitem) => menuitem.categoryid === categoryId);
-    return menuitem ? menuitem.categoryName : 'Unknown';
+  const getTypeofMenuNameById = (MenuId) => {
+    const menuitem = typeOfMenus.find((menuitem) => menuitem.MenuItemId=== MenuId);
+    return menuitem ? menuitem.MenuName : 'Unknown';
   };
 
   const handleCancel = () => {
     setShowForm(false);
     setTypeOfMenu('');
-    setselectedcategoryID(0);
+    setselectedMenuId(0);
   };
 
   const handleAddRow = () => {
@@ -150,7 +150,7 @@ const MenuMasterList = () => {
     const datatosend_array = {
       menuItems: inputRows.map(row => ({
         menuId: editId || 0,
-        categoryid: selectedcategoryID,
+        MenuId: selectedMenuId,
         menuItemName: row.foodName,
         menuDesc: row.description,
         isActive: row.available || false,
@@ -208,8 +208,8 @@ const MenuMasterList = () => {
                       <em>Select an option</em>
                     </MenuItem>
                     {typeOfMenus.map((item) => (
-                      <MenuItem key={item.categoryid} value={item.categoryName}>
-                        {item.categoryName}
+                      <MenuItem key={item.MenuId} value={item.MenuName}>
+                        {item.MenuName}
                       </MenuItem>
                     ))}
                   </Select>
@@ -397,7 +397,7 @@ const MenuMasterList = () => {
                 <TableCell component="th" scope="row">
                   {page * rowsPerPage + index + 1}
                 </TableCell>
-                <TableCell>{getTypeofMenuNameById(row.categoryId)}</TableCell>
+                <TableCell>{getTypeofMenuNameById(row.MenuId)}</TableCell>
                 <TableCell>{row.menuItemName}</TableCell>
                 <TableCell>{row.menuDesc}</TableCell>
                 <TableCell>{row.isActive ? 'True' : 'False'}</TableCell>

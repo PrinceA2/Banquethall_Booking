@@ -74,12 +74,12 @@ const SubMenuList = () => {
   const handleEdit = (pagerow) => {
     setExpanded('panel1');
     setEditMode(true);
-    setSelectedMenuType(pagerow.categoryId);
-    setSelectedSubMenu(pagerow.menuId);
+    setSelectedMenuType(pagerow.MenuId);
+    setSelectedSubMenu(pagerow.MenuItemId);
     setselectedprice(pagerow.price);
     setSelectedvalue(pagerow.quantity);
 
-    const event = { target: { value: pagerow.categoryId } };
+    const event = { target: { value: pagerow.MenuItemId} };
     handleMenutypeChange(event);
   };
 
@@ -152,13 +152,13 @@ const SubMenuList = () => {
     fetchsubmenulist();
   }, []);
 
-  const getTypeofMenuNameById = (categoryId) => {
-    const menu = menuOptions.find((menu) => menu.categoryid === categoryId);
-    return menu ? menu.categoryName : 'Unknown';
+  const getTypeofMenuNameById = (MenuId) => {
+    const menu = menuOptions.find((menu) => menu.MenuItemId=== MenuId);
+    return menu ? menu.MenuName : 'Unknown';
   };
 
   const getTypeofSubMenuNameById = (menuId) => {
-    const submenu = subMenuoptions.find((submenu) => submenu.menuId === menuId);
+    const submenu = subMenuoptions.find((submenu) => submenu.MenuItemId=== menuId);
     return submenu ? submenu.menuItemName : 'Unknown';
   };
 
@@ -171,8 +171,8 @@ const SubMenuList = () => {
     event.preventDefault();
     try {
       const response = await axios.post(createsubmenuprice, {
-        priceId: 0,
-        categoryId: selectedMenuType,
+        SubMenuPriceId: 0,
+        MenuId: selectedMenuType,
         menuId: selectedSubMenu,
         quantity: selectedvalue,
         price: selectedprice,
@@ -203,9 +203,9 @@ const SubMenuList = () => {
   };
 
   const handleMenutypeChange = (event) => {
-    const categoryid = event.target.value;
-    setSelectedMenuType(categoryid);
-    const filteredSubMenus = subMenuoptions.filter(item => item.categoryId === categoryid);
+    const MenuId= event.target.value;
+    setSelectedMenuType(MenuId);
+    const filteredSubMenus = subMenuoptions.filter(item => item.MenuId=== MenuId);
     setFilteredSubMenuOptions(filteredSubMenus);
   };
 
@@ -241,8 +241,8 @@ const SubMenuList = () => {
                         <em>Select an option</em>
                       </MenuItem>
                       {menuOptions.map((item) => (
-                        <MenuItem key={item.categoryid} value={item.categoryid}>
-                          {item.categoryName}
+                        <MenuItem key={item.MenuId} value={item.MenuId}>
+                          {item.MenuName}
                         </MenuItem>
                       ))}
                     </Select>
@@ -376,12 +376,12 @@ const SubMenuList = () => {
               </TableHead>
               <TableBody>
                 {paginatedRows.map((row, index) => (
-                  <StyledTableRow key={row.priceId}>
+                  <StyledTableRow key={row.SubMenuPriceId}>
                     <StyledTableCell component="th" scope="row">
                       {index + 1 + page * rowsPerPage}
                     </StyledTableCell>
                     <StyledTableCell>
-                      {getTypeofMenuNameById(row.categoryId)}
+                      {getTypeofMenuNameById(row.MenuId)}
                     </StyledTableCell>
                     <StyledTableCell>
                       {getTypeofSubMenuNameById(row.menuId)}
@@ -396,7 +396,7 @@ const SubMenuList = () => {
                     <StyledTableCell align="right">
                       <Grid style={{ display: 'flex', justifyContent: "right" }}>
                         <EditIcon style={{ color: ' black', marginRight: '15px' }} onClick={() => handleEdit(row)} />
-                        <DeleteIcon style={{ color: 'red' }} onClick={() => handleDelete(row.priceId)} />
+                        <DeleteIcon style={{ color: 'red' }} onClick={() => handleDelete(row.SubMenuPriceId)} />
                       </Grid>
                     </StyledTableCell>
                   </StyledTableRow>

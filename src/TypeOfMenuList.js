@@ -27,11 +27,12 @@ const TypeOFMenuList = () => {
   // Fetch menu data
   const fetchMenuData = async () => {
     try {
-      const response = await axios.get('https://localhost:7007/api/Menu');
+      const response = await axios.get('https://guesthouse-api-dje8gvcwayfdfmbr.eastus-01.azurewebsites.net/api/Menu');
       if (response.status !== 200) {
         throw new Error("Failed to fetch menu data");
       }
       setData(response.data);
+      console.log("Here is the api response data",response.data);
     } catch (error) {
       console.error(error);
       toast.error('Error fetching menu data');
@@ -50,17 +51,17 @@ const TypeOFMenuList = () => {
   // Handle edit
   const handleEdit = (row) => {
     setEditMode(true);
-    setEditId(row.categoryid);
-    setMenuName(row.categoryName);
+    setEditId(row.MenuId);
+    setMenuName(row.menuName);
     setShowForm(true);
   };
 
   // Handle delete
-  const handleDelete = async (categoryId) => {
+  const handleDelete = async (MenuId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this menu item?");
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`${base_url_menuname}/${categoryId}`);
+        const response = await axios.delete(`${base_url_menuname}/${MenuId}`);
         if (response.status === 204) {
           toast.success('Menu item deleted successfully');
           fetchMenuData();
@@ -94,7 +95,7 @@ const TypeOFMenuList = () => {
     try {
       const url = base_url_menuname;
       const method = editId ? axios.put : axios.post;
-      const response = await method(url, { categoryName: menuName, categoryid: editMode ? editId : 0 });
+      const response = await method(url, { MenuName: menuName, MenuId: editMode ? editId : 0 });
 
       if (response.status === 201 || response.status === 200) {
         toast.success('Menu Type Added/Updated Successfully');
@@ -112,11 +113,12 @@ const TypeOFMenuList = () => {
     }
   };
 
-  // Filtered data based on search input
-  const filteredData = data.filter(row => 
-    row.categoryName.toLowerCase().includes(search.toLowerCase())
-  );
-
+ // Filtered data based on search input
+ const filteredData = data.filter(row => 
+  row.menuName && row.menuName.toLowerCase().includes(search.toLowerCase())
+  
+);
+console.log("Here is the filtered data",filteredData);
   // Calculate total pages
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -228,15 +230,15 @@ const TypeOFMenuList = () => {
           </TableHead>
           <TableBody>
             {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-              <TableRow key={row.categoryid}>
+              <TableRow key={row.MenuId}>
                 <TableCell component="th" scope="row">
                   {page * rowsPerPage + index + 1}
                 </TableCell>
-                <TableCell>{row.categoryName}</TableCell>
+                <TableCell>{row.menuName}</TableCell>
                 <TableCell align="right">
                   <Grid style={{ display: 'flex', justifyContent: "right" }}>
                     <EditIcon style={{ color: 'black', marginRight: '15px', cursor: 'pointer' }} onClick={() => handleEdit(row)} />
-                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.categoryid)} />
+                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.MenuId)} />
                   </Grid>
                 </TableCell>
               </TableRow>
