@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const base_url = "https://localhost:7007/api";
+const base_url = "https://guesthouse-api-dje8gvcwayfdfmbr.eastus-01.azurewebsites.net/api";
 
 export const  base_url_pagename = `${base_url}/Pagenames`;
 export const base_url_menuname = `${base_url}/Menu`;
