@@ -1,0 +1,111 @@
+body{
+  background-color: #ecf0f4 !important; 
+}
+
+.main-container {
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-top: 55px;
+
+}
+.css-af4f60-MuiPaper-root-MuiAppBar-root{
+  box-shadow: 3px 0 10px #b7c0ce33 !important;
+}
+.page-title{
+  font-size: 20px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 20px !important;
+  margin-top: 10px !important;
+}
+
+.admin-title{
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #303030;
+  margin-right: 10px !important;
+}
+
+.mart-logo{
+  height: auto !important;
+  width: auto !important;  
+  border-radius: 0 !important;
+}
+.left-click{
+  color: #000 !important;
+}
+.admin-titlemd{
+  text-align: center;
+  color: #060606;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  line-height: 1.334;
+  letter-spacing: 0em;
+  margin-top: 12px !important;
+  margin-bottom: 0px !important;
+}
+.admin-sub-title{
+  text-align: center;
+  color: #060606 !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+  line-height: 1.334;
+  letter-spacing: 0em;
+  margin-bottom: 0.35em;
+}
+.admin-profile{
+    width: 35%;
+    max-width: 75px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 10px 10px 13px #4e4e4e26;
+}
+.shadow-none{
+  box-shadow: none !important;
+}
+.css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
+  border-right: 0px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+.side-menu-text span{
+  color: #333;
+  font-size: 14px;
+}
+.css-1uwgr7b-MuiTypography-root{
+  font-size: 14px !important;
+}
+
+
+
+
+
+@media (max-width: 600px) {
+  .main-container {
+    display: block;
+  }
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-top: 40px;
+     margin-left: 50px;
+  
+  }
+ 
+}
+.setting-icon{
+  display: 'flex';
+  flex-direction: column;
+  align-items: center;
+  padding:40px 110px;
+  
+}
+
+.checkBox_style{
+  width: 16px;
+  height: 16px;
+}
+
