@@ -66,7 +66,7 @@ const MenuMasterList = () => {
 
   // Handle Edit
   const handleEdit = (row) => {
-    setEditId(row.menuId);
+    setEditId(row.menuItemId);
     setShowForm(true);
 
     const existingRowData = {
@@ -78,25 +78,25 @@ const MenuMasterList = () => {
 
     setInputRows([existingRowData]);
 
-    const selectedMenu = typeOfMenus.find(menu => menu.MenuItemId=== row.MenuId);
+    const selectedMenu = typeOfMenus.find(menu => menu.menuId === row.menuId);
     if (selectedMenu) {
-      setTypeOfMenu(selectedMenu.MenuName);
-      setselectedMenuId(selectedMenu.MenuId);
+      setTypeOfMenu(selectedMenu.menuName);
+      setselectedMenuId(selectedMenu.menuId);
     }
   };
 
   const handleTypeOfMenuChange = (event) => {
     setTypeOfMenu(event.target.value);
-    const selectedModule = typeOfMenus.find(module => module.MenuName === event.target.value);
+    const selectedModule = typeOfMenus.find(module => module.menuName === event.target.value);
     if (selectedModule) {
-      setselectedMenuId(selectedModule.MenuId);
+      setselectedMenuId(selectedModule.menuId);
     }
   };
 
   // Handle Delete
-  const handleDelete = async (menuId) => {
+  const handleDelete = async (menuItemId) => {
     try {
-      const response = await axios.delete(`${base_url_menuitem}/${menuId}`);
+      const response = await axios.delete(`${base_url_menuitem}/${menuItemId}`);
       if (response.status === 204) {
         fetchMenuMasterData();
         console.log('Menu item deleted successfully');
@@ -122,8 +122,8 @@ const MenuMasterList = () => {
   };
 
   const getTypeofMenuNameById = (MenuId) => {
-    const menuitem = typeOfMenus.find((menuitem) => menuitem.MenuItemId=== MenuId);
-    return menuitem ? menuitem.MenuName : 'Unknown';
+    const menuitem = typeOfMenus.find((menuitem) => menuitem.menuId=== MenuId);
+    return menuitem ? menuitem.menuName : 'Unknown';
   };
 
   const handleCancel = () => {
@@ -148,9 +148,9 @@ const MenuMasterList = () => {
     event.preventDefault();
 
     const datatosend_array = {
-      menuItems: inputRows.map(row => ({
-        menuId: editId || 0,
-        MenuId: selectedMenuId,
+        menuItems: inputRows.map(row => ({
+        menuItemId: editId || 0,
+        menuId: selectedMenuId,
         menuItemName: row.foodName,
         menuDesc: row.description,
         isActive: row.available || false,
@@ -208,8 +208,8 @@ const MenuMasterList = () => {
                       <em>Select an option</em>
                     </MenuItem>
                     {typeOfMenus.map((item) => (
-                      <MenuItem key={item.MenuId} value={item.MenuName}>
-                        {item.MenuName}
+                      <MenuItem key={item.menuId} value={item.menuName}>
+                        {item.menuName}
                       </MenuItem>
                     ))}
                   </Select>
@@ -397,7 +397,7 @@ const MenuMasterList = () => {
                 <TableCell component="th" scope="row">
                   {page * rowsPerPage + index + 1}
                 </TableCell>
-                <TableCell>{getTypeofMenuNameById(row.MenuId)}</TableCell>
+                <TableCell>{getTypeofMenuNameById(row.menuId)}</TableCell>
                 <TableCell>{row.menuItemName}</TableCell>
                 <TableCell>{row.menuDesc}</TableCell>
                 <TableCell>{row.isActive ? 'True' : 'False'}</TableCell>
@@ -405,7 +405,7 @@ const MenuMasterList = () => {
                 <TableCell align="right">
                   <Grid style={{ display: 'flex', justifyContent: "right" }}>
                     <EditIcon style={{ color: 'black', marginRight: '15px', cursor: 'pointer' }} onClick={() => handleEdit(row)} />
-                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.menuId)} />
+                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.menuItemId)} />
                   </Grid>
                 </TableCell>
               </TableRow>

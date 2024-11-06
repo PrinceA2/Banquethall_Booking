@@ -10,6 +10,7 @@ export  const base_url_menuitem = `${base_url}/MenuItem`;
 export  const base_url_submenuprice = `${base_url}/SubmenuPrice`;
 export  const base_url_control = `${base_url}/Control`;
 export const base_url_orders = `${base_url}/Orders`;
+export const base_url_order_items = `${base_url}/Orders/OrderItem`;
 
 //---------------------url for pages-------------------// 
 export  const getpagenames = `${base_url_pagename}`;
@@ -57,3 +58,4 @@ export const updatemenuitem = `${base_url_menuitem}/Bulk`;
 export const getorders = `${base_url_orders}`;
 export const createorders = `${base_url_orders}`;
 export const updateorders = `${base_url_orders}`;
+export const getorderitems = `${base_url_order_items}`;

@@ -3,13 +3,14 @@ import SideBar from '../SideBar'
 import { styled } from '@mui/material/styles';
 import TableBody from '@mui/material/TableBody';
 import { tableCellClasses } from '@mui/material/TableCell';
+import TablePagination from '@mui/material/TablePagination';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import Paper from '@mui/material/Paper';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import { getmenu, getmenuitem, base_url_orders,getorders, updateorders} from '../../ApiServices';
+import { getmenu, getmenuitem, base_url_orders,getorders, updateorders, getorderitems} from '../../ApiServices';
 import { Box, Table, TextField, TableCell, TableRow, Button, Grid, Typography, FormControl, InputLabel, Modal, Select, MenuItem } from '@mui/material';
 
 const Content = () => {
@@ -17,10 +18,14 @@ const Content = () => {
   const [openModal, setopenModal] = React.useState(false);
   const [selectedorderrow, setSelectedorderrow] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const[orderRows, setorderRows] = React.useState([]);
   const [newstatus, setStatus] = React.useState('');
   const [search, setSearch] = React.useState([]);
   const [typeOfMenus, setTypeOfMenus] = React.useState([]);
   const [menuitems, setmenuitems] = React.useState([]);
+  const [orderdetailsRow, setselectedorderDetailsRow] = React.useState([]);
 
 
   function create(orderStatusKey, orderStatusValue) {
@@ -45,21 +50,15 @@ const Content = () => {
     return item ? item.orderStatusValue : 'Unknown';
   };
 
-  const fetchtypeofmenus = async () => {
-    try {
-      const response = await axios.get(getmenu);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-      if (response.status === 200) {
-        setTypeOfMenus(response.data);
-      }
-      else {
-        throw new Error("The data is not accurate");
-      }
-    }
-    catch (error) {
-      console.error('Error getting the type of menus:', error);
-    }
-  }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
 
   const handleDelete = async(deletedorderid)=> 
   {
@@ -82,31 +81,76 @@ const Content = () => {
       } 
   }
 
-  const fetchmenuitems = async () => {
+  const requestSearch = (searchedVal) => {
+    const filteredRows = rows.filter((row) => {
+      return row.orderID && row.orderID.toString().toLowerCase().includes(searchedVal.toLowerCase());
+    });
+    setSearch(searchedVal.length < 1 ? rows : filteredRows);
+  };
+  
+
+
+  const fetchorder = async() => {
     try {
-      const response = await axios.get(getmenuitem);
-      if (response.status === 200) {
-        setmenuitems(response.data);
+      const response = await axios.get(getorders);
+      if(response.status === 200)
+      {
+        setorderRows(response.data);
       }
       else {
         throw new Error("The data is not accurate");
       }
     }
-    catch (error) {
-      console.error("Error fetching the data", error);
+    catch(error)
+    {
+      console.error('Error getting order items:', error);
     }
   }
 
-  const requestSearch = (searchedVal) => {
-    const filteredRows = rows.filter((row) => {
-      return row.orderId.toString().toLowerCase().includes(searchedVal.toLowerCase());
-    });
-    setSearch(searchedVal.length < 1 ? rows : filteredRows);
-  };
+
+  const fetchtypeofmenuitems = async () => 
+    {
+      try{
+        const response = await axios.get(getmenuitem);
+        if(response.status === 200)
+        {
+          setmenuitems(response.data);
+        }
+        else
+        {
+          throw new Error("The data is not accurate");
+        }
+      }
+      catch(error)
+      {
+        console.error('Error getting menu items:', error);
+      }
+    }
+  
+
+  const fetchtypeofmenus = async () => 
+  {
+    try{
+      const response = await axios.get(getmenu);
+      if(response.status === 200)
+      {
+        setTypeOfMenus(response.data);
+      }
+      else
+      {
+        throw new Error("The data is not accurate");
+      }
+    }
+    catch(error)
+    {
+      console.error('Error getting menus:', error);
+    }
+  }
+
 
   const fetchorders = async () => {
     try {
-      const response = await axios.get(getorders);
+      const response = await axios.get(getorderitems);
       if (response.status === 200) {
         setRows(response.data);
         setSearch(response.data);
@@ -121,24 +165,25 @@ const Content = () => {
   }
   useEffect(() => {
     fetchtypeofmenus();
-    fetchmenuitems();
     fetchorders();
+    fetchtypeofmenuitems();
+    fetchorder();
   }, []);
 
   const getTypeofMenuNameById = (MenuId) => {
-    const menuitem = typeOfMenus.find((menuitem) => menuitem.MenuItemId=== MenuId);
-    console.log(menuitem);
-    return menuitem ? menuitem.MenuName : 'Unknown';
+    const menuitem = typeOfMenus.find((menuitem) => menuitem.menuId=== MenuId);
+    return menuitem ? menuitem.menuName : 'Unknown';
   };
 
-  const getMenuitemNameById = (menuId) => {
-    var iterator = menuitems.find(iterator => iterator.MenuItemId=== menuId);
+  const getMenuitemNameById = (MenuItemId) => {
+    var iterator = menuitems.find(iterator => iterator.menuItemId === MenuItemId);
     return iterator ? iterator.menuItemName : 'Unknown';
   };
 
-  const handleModalopen = (row) => {
+  const handleModalopen = (row, orderdetailsrow) => {
     setSelectedorderrow(row);
-    setStatus(row.status);
+    setselectedorderDetailsRow(orderdetailsrow); // Store the order details
+    setStatus(orderdetailsrow ? orderdetailsrow.orderStatus : ''); // Use order details for status
     setopenModal(true);
   };
 
@@ -148,35 +193,54 @@ const Content = () => {
 
   const handleStatusChange = (event) => {
     const newStatus = event.target.value;
-    setStatus(newStatus);
+    
+    // Update status in the selected order row
     setSelectedorderrow((prevRow) => ({
       ...prevRow,
-      status: newStatus,
+    }));
+  
+    // Update status in the selected order details row
+    setselectedorderDetailsRow((prevDetails) => ({
+      ...prevDetails,
+      orderStatus: newStatus,
     }));
   };
+  
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(updateorders,
-        {
-          orderId: selectedorderrow.orderId,
-          MenuId: selectedorderrow.MenuId,
-          menuId: selectedorderrow.menuId,
-          totalamount: selectedorderrow.totalamount,
-          orderType: selectedorderrow.orderType,
-          orderStatus: newstatus,
-        }
-      )
+      // Prepare the payload for the API call
+      const payload = {
+        orderId: selectedorderrow.orderID, // Assuming this is correct for your API
+        orderType: orderdetailsRow.orderType, // Use orderType from orderdetailsRow
+        orderStatus: orderdetailsRow.orderStatus, // New status from the state
+        totalAmount: orderdetailsRow.totalAmount, // Use totalAmount from orderdetailsRow
+        orderCreateDate: selectedorderrow.orderCreateDate || new Date().toISOString(), // Add the date, default to current time if not provided
+        orderItem: [
+          {
+            orderItemID: selectedorderrow.orderItemID || 0, // Ensure you get the correct ID
+            orderID: selectedorderrow.orderID,
+            menuId: selectedorderrow.menuId,
+            menuItemId: selectedorderrow.menuItemId,
+            quantity: selectedorderrow.quantity || 1, // Defaulting to 1 if not provided
+            price: selectedorderrow.price || 0, // Ensure price is included
+          }
+        ]
+      };
+  
+      const response = await axios.put(updateorders, payload);
+  
       if (response.status === 200) {
-        handleModalClose();
-        fetchorders(); // Refresh orders to reflect changes
-      } else {
+        handleModalClose(); // Close the modal
+        fetchorder();
+        //fetchorders();
         throw new Error('Failed to update status');
       }
     } catch (error) {
-      console.error('Error updating the status:', error);
+      console.error('Error updating the status:', error.response?.data || error.message);
     }
   };
+  
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -246,27 +310,50 @@ const Content = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {search.map((row) => (
-                  <StyledTableRow key={row.orderId}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.orderId}
-                    </StyledTableCell>
-                    <StyledTableCell>{getTypeofMenuNameById(row.MenuId)}</StyledTableCell>
-                    <StyledTableCell>{getMenuitemNameById(row.menuId)}</StyledTableCell>
-                    <StyledTableCell >{row.totalamount}</StyledTableCell>
-                    <StyledTableCell>{ordertypes[row.orderType]}</StyledTableCell>
-                    <StyledTableCell>{getorderstatusbyId(row.orderStatus)}</StyledTableCell>
-                    <StyledTableCell align="right">
-                      <Grid style={{ display: 'flex' }}>
-                        <VisibilityIcon style={{ color: 'black', marginRight: '15px' }} onClick={() => handleModalopen(row)} />
-                        <DeleteIcon style={{ color: 'red' }} onClick={()=> handleDelete(row.orderId)} />
-                      </Grid>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
+              {search.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((row) => {
+    // Find corresponding order detail
+    const orderDetail = orderRows.find(detail => detail.orderId === row.orderID);
+
+    return (
+      <StyledTableRow key={row.orderID}>
+        <StyledTableCell component="th" scope="row">
+          {row.orderID}
+        </StyledTableCell>
+        <StyledTableCell>{getTypeofMenuNameById(row.menuId)}</StyledTableCell>
+        <StyledTableCell>{getMenuitemNameById(row.menuItemId)}</StyledTableCell>
+        <StyledTableCell>
+          {orderDetail ? orderDetail.totalAmount : 'N/A'}
+        </StyledTableCell>
+        <StyledTableCell>
+          {orderDetail ? ordertypes[orderDetail.orderType] : 'N/A'}
+        </StyledTableCell>
+        <StyledTableCell>
+          {orderDetail ? getorderstatusbyId(orderDetail.orderStatus) : 'N/A'}
+        </StyledTableCell>
+        <StyledTableCell align="right">
+          <Grid style={{ display: 'flex' }}>
+            <VisibilityIcon style={{ color: 'black', marginRight: '15px' }} onClick={() => handleModalopen(row,orderDetail)} />
+            <DeleteIcon style={{ color: 'red' }} onClick={() => handleDelete(row.orderId)} />
+          </Grid>
+        </StyledTableCell>
+      </StyledTableRow>
+    );
+  })}
+</TableBody>
+
             </Table>
           </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={search.length} // Count based on filtered search
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+
         </Paper>
       </Box>
 
@@ -292,18 +379,18 @@ const Content = () => {
           <Typography variant="body1" id="modal-modal-description" sx={{ fontWeight: 'bold' }} >
             {/* Add order details here */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Typography sx={{ fontWeight: 'bold' }}>Order ID: </Typography> <Typography>{selectedorderrow.orderId}</Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>Status: </Typography> <Typography>{getorderstatusbyId(selectedorderrow.orderStatus)}</Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>MenuType:</Typography> <Typography> {getTypeofMenuNameById(selectedorderrow.MenuId)} </Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>FoodItem:</Typography> <Typography> {getMenuitemNameById(selectedorderrow.menuId)} </Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>Amount: </Typography> <Typography>{selectedorderrow.totalamount} </Typography>
-              <Typography sx={{ fontWeight: 'bold' }}>OrderType: </Typography> <Typography>{ordertypes[selectedorderrow.orderType]} </Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Order ID: </Typography> <Typography>{selectedorderrow.orderID}</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Status: </Typography> <Typography>{getorderstatusbyId(orderdetailsRow.orderStatus)}</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>MenuType:</Typography> <Typography> {getTypeofMenuNameById(selectedorderrow.menuId)} </Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>FoodItem:</Typography> <Typography> {getMenuitemNameById(selectedorderrow.menuItemId)} </Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Amount: </Typography> <Typography>{selectedorderrow.price} </Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>OrderType: </Typography> <Typography>{ordertypes[orderdetailsRow.orderType]} </Typography>
               <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel id="status-label">Update Status</InputLabel>
                 <Select
                   labelId="status-label"
                   id="status-select"
-                  value={selectedorderrow.status}
+                  value={orderdetailsRow?.orderStatus || ''}
                   label="Update status"
                   type='inherit'
                   sx={{width:'200px', height:'50px'}}

@@ -51,17 +51,17 @@ const TypeOFMenuList = () => {
   // Handle edit
   const handleEdit = (row) => {
     setEditMode(true);
-    setEditId(row.MenuId);
+    setEditId(row.menuId);
     setMenuName(row.menuName);
     setShowForm(true);
   };
 
   // Handle delete
-  const handleDelete = async (MenuId) => {
+  const handleDelete = async (menuId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this menu item?");
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`${base_url_menuname}/${MenuId}`);
+        const response = await axios.delete(`${base_url_menuname}/${menuId}`);
         if (response.status === 204) {
           toast.success('Menu item deleted successfully');
           fetchMenuData();
@@ -95,7 +95,7 @@ const TypeOFMenuList = () => {
     try {
       const url = base_url_menuname;
       const method = editId ? axios.put : axios.post;
-      const response = await method(url, { MenuName: menuName, MenuId: editMode ? editId : 0 });
+      const response = await method(url, { MenuName: menuName, menuId: editMode ? editId : 0 });
 
       if (response.status === 201 || response.status === 200) {
         toast.success('Menu Type Added/Updated Successfully');
@@ -230,7 +230,7 @@ console.log("Here is the filtered data",filteredData);
           </TableHead>
           <TableBody>
             {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-              <TableRow key={row.MenuId}>
+              <TableRow key={row.menuId}>
                 <TableCell component="th" scope="row">
                   {page * rowsPerPage + index + 1}
                 </TableCell>
@@ -238,7 +238,7 @@ console.log("Here is the filtered data",filteredData);
                 <TableCell align="right">
                   <Grid style={{ display: 'flex', justifyContent: "right" }}>
                     <EditIcon style={{ color: 'black', marginRight: '15px', cursor: 'pointer' }} onClick={() => handleEdit(row)} />
-                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.MenuId)} />
+                    <DeleteIcon style={{ color: 'red', cursor: 'pointer' }} onClick={() => handleDelete(row.menuId)} />
                   </Grid>
                 </TableCell>
               </TableRow>
